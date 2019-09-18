@@ -26,8 +26,6 @@ const storage = cloudinaryStorage({
   transformation: [{ width: 500, height: 500, crop: 'limit' }]
 })
 const parser = multer({ storage })
-//Moment for Timestamps
-const moment = require('moment')
 //Mongoose for MongoDB queries
 const mongoose = require('mongoose')
 const schema = require('./server/schema.ts')
@@ -35,10 +33,8 @@ const root = require('./server/root.ts')
 const { Seeder } = require('mongo-seeding')
 //Path for static files
 const path = require('path')
-const INDEX = path.join(__dirname, 'index.html');
 //formatError for custom graphql resolver errors
 import { formatError } from 'apollo-errors'
-import { client } from 'websocket'
 //WebSocket
 const SocketServer = require('ws').Server
 
@@ -139,19 +135,6 @@ class Player {
 }
 
 class Clients {
-  constructor() {
-    this.clientList = {}
-    this.saveClient = this.saveClient.bind(this)
-  }
-  saveClient(client: Client) {
-    this.clientList[client.email] = client
-  }
-  removeClient(email: string) {
-    delete this.clientList[email]
-  }
-}
-
-class ActiveClients {
   constructor() {
     this.clientList = {}
     this.saveClient = this.saveClient.bind(this)
