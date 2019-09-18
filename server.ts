@@ -150,19 +150,6 @@ class Clients {
   }
 }
 
-class ActiveClients {
-  constructor() {
-    this.clientList = {}
-    this.saveClient = this.saveClient.bind(this)
-  }
-  saveClient(client: Client) {
-    this.clientList[client.email] = client
-  }
-  removeClient(email: string) {
-    delete this.clientList[email]
-  }
-}
-
 interface Games {
   gameList: object
 }
@@ -199,7 +186,6 @@ class QuizGame {
 }
 
 const clients = new Clients()
-const activeClients = new ActiveClients()
 const games = new Games()
 
 const httpServer = createServer(app)
