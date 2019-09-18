@@ -5,7 +5,6 @@ const app = express()
 const port = process.env.PORT || 3000
 //GraphQL
 const graphqlHTTP = require('express-graphql')
-import { execute, subscribe } from 'graphql'
 import { createServer } from 'http'
 //Body Parser
 const bodyParser = require('body-parser')
@@ -91,18 +90,6 @@ app.post('/upload', parser.single('image'), (req, res) => {
   }
   res.send(req.file.url)
 })
-
-//This is the websocket that wraps the server. A websocket is basically a live connection between server and client that are actively
-//listening to each other.
-// const WebSocket = require('ws')
-// const wss = new WebSocket.Server({ port: 3001 })
-const l0 = new RegExp(/l0/)
-const m0 = new RegExp(/m0/)
-// import User from './server/models/user'
-
-// interface clientList {
-//   email: WebSocket
-// }
 
 interface Client {
   email: string
@@ -213,12 +200,10 @@ class QuizGame {
 }
 
 const clients = new Clients()
-const activeClients = new ActiveClients()
 const games = new Games()
 
 const httpServer = createServer(app)
 const wss = new SocketServer({ server: httpServer })
-// const hangoutSocketServer = new server({ port: 3002 })
 
 wss.on('connection', ws => {
   console.log('CLIENT CONNECTED')
@@ -286,7 +271,6 @@ wss.on('connection', ws => {
   ws.on('close', event => {})
 })
 
-// app.listen(port, () => console.log(`Listening on ${port}`))
 httpServer.listen(port, () => console.log(`Listening on ${port}`))
 
 export = { db }
