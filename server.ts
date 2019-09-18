@@ -36,11 +36,12 @@ const root = require('./server/root.ts')
 const { Seeder } = require('mongo-seeding')
 //Path for static files
 const path = require('path')
+const INDEX = path.join(__dirname, 'index.html');
 //formatError for custom graphql resolver errors
 import { formatError } from 'apollo-errors'
 import { client } from 'websocket'
 //WebSocket
-const server = require('ws').Server
+const SocketServer = require('ws').Server
 
 // setting useFindAndModify to false resolves MongoDB Node.js deprecation warnings from using certain Mongoose methods
 // setting useCreateIndex true to allow unique constraint in user email
@@ -200,7 +201,8 @@ class QuizGame {
 const clients = new Clients()
 const activeClients = new ActiveClients()
 
-const wss = new server({ server: app })
+const httpServer = createServer(app)
+const wss = new SocketServer({ server: httpServer })
 // const hangoutSocketServer = new server({ port: 3002 })
 
 wss.on('connection', ws => {
@@ -259,6 +261,7 @@ wss.on('connection', ws => {
   ws.on('close', event => {})
 })
 
-app.listen(port, () => console.log(`Listening on ${port}`))
+// app.listen(port, () => console.log(`Listening on ${port}`))
+httpServer.listen(port, () => console.log(`Listening on ${port}`))
 
 export = { db }
