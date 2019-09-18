@@ -1,0 +1,1 @@
+web: ts-node-dev server.ts
