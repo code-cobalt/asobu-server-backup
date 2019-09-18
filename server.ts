@@ -177,6 +177,20 @@ class ActiveClients {
   }
 }
 
+interface Games {
+  gameList: object
+}
+
+class Games {
+  constructor() {
+    this.gameList = {}
+    this.addGame = this.addGame.bind(this)
+  }
+  addGame(quizGame: QuizGame) {
+    this.gameList[quizGame.id] = quizGame
+  }
+}
+
 interface QuizGame {
   id: number
   playerList: object
@@ -200,6 +214,7 @@ class QuizGame {
 
 const clients = new Clients()
 const activeClients = new ActiveClients()
+const games = new Games()
 
 const httpServer = createServer(app)
 const wss = new SocketServer({ server: httpServer })
@@ -256,6 +271,16 @@ wss.on('connection', ws => {
     if (message[0] === 'b0') {
       if (clients.clientList[message[2]])
         clients.clientList[message[2]].socket.send(`b0 ${message[1]}`)
+    }
+    //[0] - Quiz Game Code, [1] - Origin Email, [2] - Hangout ID, [3] - Partner Email
+    if (message[0] === 'q0') {
+      if (games.gameList[message[2]] && clients.clientList[message[1]]) {
+        games.gameList[message[2]].addPlayer(clients.clientList[message[1]])
+      } else {
+        const newQuizGame = new QuizGame(message[2], [message[1], message[3]])
+        newQuizGame.addPlayer(clients.clientList[message[1]])
+        games.addGame(newQuizGame)
+      }
     }
   })
   ws.on('close', event => {})
