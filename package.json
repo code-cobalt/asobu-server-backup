@@ -4,15 +4,9 @@
     "node": "10.x"
   },
   "scripts": {
-    "frontend": "yarn start",
     "backend": "yarn serve",
-    "start": "expo start",
     "serve": "ts-node-dev server.ts",
-    "test": "mocha ./server/test",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
-    "eject": "expo eject"
+    "test": "mocha ./server/test"
   },
   "dependencies": {
     "@types/express": "^4.17.1",
