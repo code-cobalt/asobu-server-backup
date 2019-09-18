@@ -200,7 +200,7 @@ class QuizGame {
 const clients = new Clients()
 const activeClients = new ActiveClients()
 
-const wss = new server('ws://asobu-staging.herokuapp.com')
+const wss = new server({ server: app })
 // const hangoutSocketServer = new server({ port: 3002 })
 
 wss.on('connection', ws => {
