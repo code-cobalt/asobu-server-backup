@@ -6,7 +6,8 @@
   "scripts": {
     "backend": "yarn serve",
     "serve": "ts-node-dev server.ts",
-    "test": "mocha ./server/test"
+    "test": "mocha ./server/test",
+    "postinstall": "yarn backend"
   },
   "dependencies": {
     "@types/express": "^4.17.1",
