@@ -27,8 +27,6 @@ const storage = cloudinaryStorage({
   transformation: [{ width: 500, height: 500, crop: 'limit' }]
 })
 const parser = multer({ storage })
-//Moment for Timestamps
-const moment = require('moment')
 //Mongoose for MongoDB queries
 const mongoose = require('mongoose')
 const schema = require('./server/schema.ts')
