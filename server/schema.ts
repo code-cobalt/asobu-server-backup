@@ -101,6 +101,7 @@ const schema = buildSchema(`
         first_name: String!
         email: String!
         profile_photo: String
+        equipped_badges: [String]
     }
 
     input StatsInput {
@@ -214,4 +215,4 @@ const schema = buildSchema(`
     }
 `)
 
-module.exports = schema
+export = schema
