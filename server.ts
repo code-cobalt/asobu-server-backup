@@ -5,7 +5,6 @@ const app = express()
 const port = process.env.PORT || 3000
 //GraphQL
 const graphqlHTTP = require('express-graphql')
-import { execute, subscribe } from 'graphql'
 import { createServer } from 'http'
 //Body Parser
 const bodyParser = require('body-parser')
