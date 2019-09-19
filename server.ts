@@ -189,58 +189,61 @@ const httpServer = createServer(app)
 const wss = new SocketServer({ server: httpServer })
 
 wss.on('connection', ws => {
-  console.log('CLIENT CONNECTED')
+  console.log('New Client Connected')
   ws.on('message', msg => {
-    console.log('FROM CLIENT: ', msg)
     const message = msg.split(' ')
     //[0] - Login Code, [1] - User Email
     if (message[0] === 'l0') {
       let newClient = new Client(message[1], ws)
       clients.saveClient(newClient)
+      console.log(`${message[1]} has logged in.`)
       const pulseCheck = setInterval(() => {
         if (!newClient.heartbeat) {
           clients.removeClient(newClient.email)
           clearInterval(pulseCheck)
-          console.log('DEAD CLIENT REMOVED')
+          console.log(`${newClient.email} dropped.`)
         } else {
           newClient.heartbeat = false
           newClient.socket.send('p0')
-          console.log('PINGED CLIENT')
+          console.log(`Heartbeat sent to ${newClient.email}.`)
         }
       }, 30000)
     }
     if (message[0] === 'l1') {
       clients.removeClient(message[1])
+      console.log(`${message[1]} has logged out.`)
     }
     if (message[0] === 'p0') {
-      console.log('CLIENT PONGED')
       if (clients.clientList[message[1]]) {
         clients.clientList[message[1]].heartbeat = true
+        console.log(`${message[1]} is alive.`)
       }
     }
     //[0] - Message Code, [1] - Target Email, [2] - Chat ID
     if (message[0] === 'm0') {
       if (clients.clientList[message[1]])
         clients.clientList[message[1]].socket.send(`m0 ${message[2]}`)
+        console.log(`${message[1]} was sent an update for chat ${message[2]}.`)
     }
     //[0] - Hangout Request Code, [1] - Sender Email, [2] - Target Email
     if (message[0] === 'h0') {
       if (clients.clientList[message[2]]) {
         clients.clientList[message[2]].socket.send(`h0 ${message[1]}`)
-        console.log(`Sent h0 ${message[1]} to CLIENT: ${message[2]}`)
+        console.log(`${message[1]} requested a hangout with ${message[2]}.`)
       }
     }
     //[0] - Hangout Accept Code, [1] - Accepting Email, [2] - Target Email, [3] - Accepting First Name
     if (message[0] === 'h1') {
       if (clients.clientList[message[2]]) {
         clients.clientList[message[2]].socket.send(`h1 ${message[1]} ${message[3]}`)
-        console.log(`Sent h1 ${message[1]} ${message[3]} to CLIENT: ${message[2]}`)
+        console.log(`${message[1]} accepted a hangout with ${message[2]}.`)
       }
     }
     //[0] - Block Code, [1] - Requesting Email, [2] - Target Email, [3] - Chat ID
     if (message[0] === 'b0') {
       if (clients.clientList[message[2]])
         clients.clientList[message[2]].socket.send(`b0 ${message[1]}`)
+        console.log(`${message[1]} has blocked ${message[2]}.`)
     }
     //[0] - Quiz Game Code, [1] - Origin Email, [2] - Hangout ID, [3] - Partner Email
     if (message[0] === 'q0') {
