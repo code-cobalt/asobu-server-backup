@@ -317,7 +317,10 @@ const root = {
         pending_revies: [],
         blocked_users: [],
         blocked_by_users: [],
-        equipped_badges: []
+        equipped_badges: [],
+        longitude: '',
+        latitude: '',
+        isActive: false
       })
       const hash = bcrypt.hashSync(userObj.password, 10)
       userObj.password_hash = hash
@@ -668,7 +671,9 @@ const root = {
             hangout_id: params.hangoutId
           }
         },
-        $push: { pending_reviews: hangout.participants[1] }
+        $push: {
+          pending_reviews: hangout.participants[1]
+        }
       }
     )
     await User.updateOne(
@@ -679,7 +684,9 @@ const root = {
             hangout_id: params.hangoutId
           }
         },
-        $push: { pending_reviews: hangout.participants[0] }
+        $push: {
+          pending_reviews: hangout.participants[0]
+        }
       }
     )
     return `${hangout.participants[0].first_name} and ${hangout.participants[1].first_name} have finished hanging out.`
