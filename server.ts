@@ -225,15 +225,17 @@ wss.on('connection', ws => {
     }
     //[0] - Hangout Request Code, [1] - Sender Email, [2] - Target Email
     if (message[0] === 'h0') {
-      if (clients.clientList[message[2]])
+      if (clients.clientList[message[2]]) {
         clients.clientList[message[2]].socket.send(`h0 ${message[1]}`)
+        console.log(`Sent h0 ${message[1]} to CLIENT: ${message[2]}`)
+      }
     }
     //[0] - Hangout Accept Code, [1] - Accepting Email, [2] - Target Email, [3] - Accepting First Name
     if (message[0] === 'h1') {
-      if (clients.clientList[message[2]])
-        clients.clientList[message[2]].socket.send(
-          `h1 ${message[1]} ${message[3]}`
-        )
+      if (clients.clientList[message[2]]) {
+        clients.clientList[message[2]].socket.send(`h1 ${message[1]} ${message[3]}`)
+        console.log(`Sent h1 ${message[1]} ${message[3]} to CLIENT: ${message[2]}`)
+      }
     }
     //[0] - Block Code, [1] - Requesting Email, [2] - Target Email, [3] - Chat ID
     if (message[0] === 'b0') {
