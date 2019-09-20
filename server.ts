@@ -242,18 +242,21 @@ wss.on('connection', ws => {
     if (message[0] === 's0') {
       if (clients.clientList[message[2]]) {
         clients.clientList[message[2]].socket.send(`s0 ${message[1]} ${message[3]}`)
+        console.log(`${message[1]} has requested to start a hangout with ${message[2]}.`)
       }
     }
     //[0] - Start Hangout Confirmed Code, [1] - Sender Email, [2] - Target Email, [3] - hangoutId
     if (message[0] === 's1') {
       if (clients.clientList[message[2]]) {
         clients.clientList[message[2]].socket.send(`s1 ${message[1]} ${message[3]}`)
+        console.log(`${message[1]} has confirmed a hangout with ${message[2]}.`)
       }
     }
     //[0] - Finish Hangout, [1] - Sender Email, [2] - Target Email, [3] - hangoutId
     if (message[0] === 'f1') {
       if (clients.clientList[message[2]]) {
         clients.clientList[message[2]].socket.send(`f0 ${message[1]} ${message[3]}`)
+        console.log(`${message[1]} has ended a hangout with ${message[2]}.`)
       }
     }
     //[0] - Block Code, [1] - Requesting Email, [2] - Target Email, [3] - Chat ID
