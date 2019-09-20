@@ -5,6 +5,7 @@ const app = express()
 const port = process.env.PORT || 3000
 //GraphQL
 const graphqlHTTP = require('express-graphql')
+const { customFormatErrorFn } = require('apollo-errors')
 import { createServer } from 'http'
 //Body Parser
 const bodyParser = require('body-parser')
@@ -67,7 +68,9 @@ app.use(
   '/graphql',
   graphqlHTTP({
     schema,
-    rootValue: root
+    graphiql: true,
+    customFormatErrorFn,
+    rootValue: root,
   })
 )
 
