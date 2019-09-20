@@ -220,47 +220,57 @@ wss.on('connection', ws => {
     }
     //[0] - Message Code, [1] - Target Email, [2] - Chat ID
     if (message[0] === 'm0') {
+      console.log(`${message[1]} was sent an update for chat ${message[2]}.`)
       if (clients.clientList[message[1]])
         clients.clientList[message[1]].socket.send(`m0 ${message[2]}`)
-        console.log(`${message[1]} was sent an update for chat ${message[2]}.`)
+        console.log(`${message[2]} was notified.`)
     }
     //[0] - Hangout Request Code, [1] - Sender Email, [2] - Target Email
     if (message[0] === 'h0') {
+      console.log(`${message[1]} requested a hangout with ${message[2]}.`)
       if (clients.clientList[message[2]]) {
         clients.clientList[message[2]].socket.send(`h0 ${message[1]}`)
-        console.log(`${message[1]} requested a hangout with ${message[2]}.`)
+        console.log(`${message[2]} was notified.`)
       }
     }
     //[0] - Hangout Accept Code, [1] - Accepting Email, [2] - Target Email, [3] - Accepting First Name
     if (message[0] === 'h1') {
+      console.log(`${message[1]} accepted a hangout with ${message[2]}.`)
       if (clients.clientList[message[2]]) {
         clients.clientList[message[2]].socket.send(`h1 ${message[1]} ${message[3]}`)
-        console.log(`${message[1]} accepted a hangout with ${message[2]}.`)
+        console.log(`${message[2]} was notified.`)
       }
     }
     //[0] - Start Hangout Request Code, [1] - Sender Email, [2] - Target Email, [3] - Sender First Name
     if (message[0] === 's0') {
+      console.log(`${message[1]} has requested to start a hangout with ${message[2]}.`)
       if (clients.clientList[message[2]]) {
         clients.clientList[message[2]].socket.send(`s0 ${message[1]} ${message[3]}`)
+        console.log(`${message[2]} was notified.`)
       }
     }
     //[0] - Start Hangout Confirmed Code, [1] - Sender Email, [2] - Target Email, [3] - hangoutId
     if (message[0] === 's1') {
+      console.log(`${message[1]} has confirmed a hangout with ${message[2]}.`)
       if (clients.clientList[message[2]]) {
         clients.clientList[message[2]].socket.send(`s1 ${message[1]} ${message[3]}`)
+        console.log(`${message[2]} was notified.`)
       }
     }
     //[0] - Finish Hangout, [1] - Sender Email, [2] - Target Email, [3] - hangoutId
     if (message[0] === 'f1') {
+      console.log(`${message[1]} has ended a hangout with ${message[2]}.`)
       if (clients.clientList[message[2]]) {
-        clients.clientList[message[2]].socket.send(`f0 ${message[1]} ${message[3]}`)
+        clients.clientList[message[2]].socket.send(`f1 ${message[1]} ${message[3]}`)
+        console.log(`${message[2]} was notified.`)
       }
     }
     //[0] - Block Code, [1] - Requesting Email, [2] - Target Email, [3] - Chat ID
     if (message[0] === 'b0') {
+      console.log(`${message[1]} has blocked ${message[2]}.`)
       if (clients.clientList[message[2]])
         clients.clientList[message[2]].socket.send(`b0 ${message[1]}`)
-        console.log(`${message[1]} has blocked ${message[2]}.`)
+        console.log(`${message[2]} was notified.`)
     }
     //[0] - Quiz Game Code, [1] - Origin Email, [2] - Hangout ID, [3] - Partner Email
     if (message[0] === 'q0') {
