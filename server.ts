@@ -251,6 +251,12 @@ wss.on('connection', ws => {
         clients.clientList[message[2]].socket.send(`s1 ${message[1]} ${message[3]}`)
       }
     }
+    //[0] - Finish Hangout, [1] - Sender Email, [2] - Target Email, [3] - hangoutId
+    if (message[0] === 'f0') {
+      if (clients.clientList[message[2]]) {
+        clients.clientList[message[2]].socket.send(`f0 ${message[1]} ${message[3]}`)
+      }
+    }
     //[0] - Block Code, [1] - Requesting Email, [2] - Target Email, [3] - Chat ID
     if (message[0] === 'b0') {
       if (clients.clientList[message[2]])
