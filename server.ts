@@ -261,7 +261,7 @@ wss.on('connection', ws => {
     if (message[0] === 'f1') {
       console.log(`${message[1]} has ended a hangout with ${message[2]}.`)
       if (clients.clientList[message[2]]) {
-        clients.clientList[message[2]].socket.send(`f0 ${message[1]} ${message[3]}`)
+        clients.clientList[message[2]].socket.send(`f1 ${message[1]} ${message[3]}`)
         console.log(`${message[2]} was notified.`)
       }
     }
