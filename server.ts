@@ -33,8 +33,6 @@ const root = require('./server/root.ts')
 const { Seeder } = require('mongo-seeding')
 //Path for static files
 const path = require('path')
-//formatError for custom graphql resolver errors
-import { formatError } from 'apollo-errors'
 //WebSocket
 const SocketServer = require('ws').Server
 
@@ -69,9 +67,7 @@ app.use(
   '/graphql',
   graphqlHTTP({
     schema,
-    rootValue: root,
-    graphiql: true,
-    formatError
+    rootValue: root
   })
 )
 
