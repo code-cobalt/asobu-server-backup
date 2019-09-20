@@ -17,6 +17,7 @@ const schema = buildSchema(`
         email: String
         profile_photo: String
         equipped_badges: [String]
+        interests: [String]
         longitude: String,
         latitude: String,
         isActive: Boolean
