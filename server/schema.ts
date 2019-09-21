@@ -18,8 +18,8 @@ const schema = buildSchema(`
         profile_photo: String
         equipped_badges: [String]
         interests: [String]
-        longitude: Int,
-        latitude: Int,
+        longitude: Float,
+        latitude: Float,
         is_active: Boolean
     }
 
@@ -67,8 +67,8 @@ const schema = buildSchema(`
         blocked_by_users: [String]
         equipped_badges: [String]
         token: String
-        longitude: Int,
-        latitude: Int,
+        longitude: Float,
+        latitude: Float,
         is_active: Boolean
     }
 
@@ -174,8 +174,8 @@ const schema = buildSchema(`
         profile_photo: String
         interests: [String],
         equipped_badges: [String]
-        longitude: Int,
-        latitude: Int,
+        longitude: Float,
+        latitude: Float,
         is_active: Boolean
     }
 
