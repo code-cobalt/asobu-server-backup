@@ -7,6 +7,8 @@ const port = process.env.PORT || 3000
 const graphqlHTTP = require('express-graphql')
 const { customFormatErrorFn } = require('apollo-errors')
 import { createServer } from 'http'
+import gql from 'graphql-tag'
+import { print } from 'graphql'
 //Body Parser
 const bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -36,6 +38,7 @@ const { Seeder } = require('mongo-seeding')
 const path = require('path')
 //WebSocket
 const SocketServer = require('ws').Server
+const axios = require('axios')
 
 // setting useFindAndModify to false resolves MongoDB Node.js deprecation warnings from using certain Mongoose methods
 // setting useCreateIndex true to allow unique constraint in user email
@@ -89,15 +92,9 @@ app.post('/upload', parser.single('image'), (req, res) => {
 interface Client {
   email: string
   socket: WebSocket
+  token: string
   heartbeat: boolean
 }
-
-// interface Pair {
-//   pairList: object
-//   started: boolean
-//   finished: boolean
-//   reviewed: boolean
-// }
 
 interface Player {
   email: string
@@ -116,9 +113,10 @@ interface ActiveClients {
 }
 
 class Client {
-  constructor(email, socket) {
+  constructor(email, socket, token) {
     this.email = email
     this.socket = socket
+    this.token = token
     this.heartbeat = true
   }
 }
@@ -190,15 +188,64 @@ const games = new Games()
 const httpServer = createServer(app)
 const wss = new SocketServer({ server: httpServer })
 
+async function getToken(email) {
+  const query = gql`
+        query User($userEmail: String!) {
+          User(userEmail: $userEmail) {
+            token
+          }
+        }
+      `
+      console.log("line 204")
+      let tokenResult = await axios.post('https://asobu-staging.herokuapp.com/graphql', { 
+        query: print(query), 
+        variables: {
+          userEmail: email
+        } 
+      })
+
+      const token = tokenResult.data.data.User.token
+      return token
+}
+
+function sendPush(token, title, message) {
+  let config = {
+    headers: {
+      "host": "exp.host",
+      "accept": "application/json",
+      "accept-encoding": "gzip, deflate",
+      "content-type": "application/json"
+    }
+  }
+  
+  let data = {
+    "to": token,
+    "title": title,
+    "body": message
+  }
+  
+  axios.post('https://exp.host/--/api/v2/push/send', data, config)
+  .then((response) => {
+    console.log('AXIOS POST FOR PUSH')
+    console.log(response)
+  })
+  .catch((err) => {
+    console.log('AXIOS ERROR FOR PUSH')
+    console.log(err)
+  })
+}
+
 wss.on('connection', ws => {
   console.log('New Client Connected')
-  ws.on('message', msg => {
+  ws.on('message', async msg => {
     const message = msg.split(' ')
-    //[0] - Login Code, [1] - User Email
+    //[0] - Login Code, [1] - User Email, [2] - User Token
     if (message[0] === 'l0') {
-      let newClient = new Client(message[1], ws)
+      
+
+      let newClient = new Client(message[1], ws, message[2])
       clients.saveClient(newClient)
-      console.log(`${message[1]} has logged in.`)
+      console.log(`${message[1]} has logged in. Token is ${message[2]}.`)
       const pulseCheck = setInterval(() => {
         if (!newClient.heartbeat) {
           clients.removeClient(newClient.email)
@@ -234,6 +281,10 @@ wss.on('connection', ws => {
       if (clients.clientList[message[2]]) {
         clients.clientList[message[2]].socket.send(`h0 ${message[1]}`)
         console.log(`${message[2]} was notified.`)
+      } else {
+        const token = await getToken(message[2])
+        sendPush(token, 'New Hangout Request', 'You have a received a new hangout request!')
+        console.log('sendPush invoked')
       }
     }
     //[0] - Hangout Accept Code, [1] - Accepting Email, [2] - Target Email, [3] - Accepting First Name
