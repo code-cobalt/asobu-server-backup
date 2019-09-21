@@ -61,8 +61,8 @@ const users = [
     equipped_badges: ['funny_silver', 'kind_bronze', 'intellectual_bronze'],
     longitude: 139.7275941,
     latitude: 35.6579715,
-    isActive: true,
-    imei: '358363043724657'
+    is_active: true,
+    token: ''
   },
   {
     first_name: 'Sara',
@@ -112,8 +112,8 @@ const users = [
     equipped_badges: ['kind_silver', 'intellectual_gold', 'therapeutic_silver'],
     longitude: 139.798799,
     latitude: 40,
-    isActive: true,
-    imei: '356628020481477'
+    is_active: true,
+    token: ''
   },
   {
     first_name: 'Aaron',
@@ -163,8 +163,8 @@ const users = [
     equipped_badges: ['intellectual_bronze'],
     longitude: 139.781029,
     latitude: 35.742322,
-    isActive: true,
-    imei: '860588012837160'
+    is_active: true,
+    token: ''
   },
   {
     first_name: 'Lily',
@@ -214,8 +214,8 @@ const users = [
     equipped_badges: ['intellectual_gold', 'kind_silver', 'funny_bronze'],
     longitude: 139.732985,
     latitude: 35.662649,
-    isActive: true,
-    imei: '350751383349937'
+    is_active: true,
+    token: ''
   },
   {
     first_name: 'James',
@@ -265,8 +265,8 @@ const users = [
     equipped_badges: ['funny_bronze', 'intellectual_bronze', 'kind_bronze'],
     longitude: 139.700581,
     latitude: 35.659825,
-    isActive: true,
-    imei: '20309624801284'
+    is_active: true,
+    token: ''
   }
 ]
 
