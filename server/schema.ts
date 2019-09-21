@@ -17,8 +17,10 @@ const schema = buildSchema(`
         email: String
         profile_photo: String
         equipped_badges: [String]
+        interests: [String]
         longitude: Int,
         latitude: Int,
+
         isActive: Boolean
     }
 
@@ -171,7 +173,9 @@ const schema = buildSchema(`
         email: String
         phone_number: String
         profile_photo: String
-        interests: [String]
+
+        interests: [String],
+        equipped_badges: [String]
         longitude: Int,
         latitude: Int,
         isActive: Boolean

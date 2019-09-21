@@ -92,12 +92,12 @@ interface Client {
   heartbeat: boolean
 }
 
-interface Pair {
-  pairList: object
-  started: boolean
-  finished: boolean
-  reviewed: boolean
-}
+// interface Pair {
+//   pairList: object
+//   started: boolean
+//   finished: boolean
+//   reviewed: boolean
+// }
 
 interface Player {
   email: string
@@ -150,6 +150,7 @@ interface Games {
   gameList: object
 }
 
+//Games and Games List => Client/Clientlist
 class Games {
   constructor() {
     this.gameList = {}
@@ -160,8 +161,10 @@ class Games {
   }
 }
 
+//id should match hangout id
+//validPlayers = user emails
 interface QuizGame {
-  id: number
+  id: string
   playerList: object
   validPlayers: Array<string>
   answers: number
@@ -272,6 +275,11 @@ wss.on('connection', ws => {
         clients.clientList[message[2]].socket.send(`b0 ${message[1]}`)
         console.log(`${message[2]} was notified.`)
     }
+
+    //send game question as well. will have to split by commas instead of spaces
+    //will alert user with textinput
+    //send answers to each user
+    //q0 starts game, q1 sends question, q2 sends answer
     //[0] - Quiz Game Code, [1] - Origin Email, [2] - Hangout ID, [3] - Partner Email
     if (message[0] === 'q0') {
       if (games.gameList[message[2]] && clients.clientList[message[1]]) {
@@ -282,7 +290,14 @@ wss.on('connection', ws => {
         games.addGame(newQuizGame)
       }
     }
+    if (message[0] === 'q1') {
+    
+    }
+    if (message[0] === 'q2') {
+
+    }
   })
+
   ws.on('close', event => {})
 })
 
