@@ -18,8 +18,9 @@ const schema = buildSchema(`
         profile_photo: String
         equipped_badges: [String]
         interests: [String]
-        longitude: String,
-        latitude: String,
+        longitude: Int,
+        latitude: Int,
+
         isActive: Boolean
     }
 
@@ -67,8 +68,8 @@ const schema = buildSchema(`
         blocked_by_users: [String]
         equipped_badges: [String]
         imei: String
-        longitude: String,
-        latitude: String,
+        longitude: Int,
+        latitude: Int,
         isActive: Boolean
     }
 
@@ -172,10 +173,11 @@ const schema = buildSchema(`
         email: String
         phone_number: String
         profile_photo: String
+
         interests: [String],
         equipped_badges: [String]
-        longitude: String,
-        latitude: String,
+        longitude: Int,
+        latitude: Int,
         isActive: Boolean
     }
 
