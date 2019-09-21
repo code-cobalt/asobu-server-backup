@@ -172,10 +172,12 @@ const schema = buildSchema(`
         email: String
         phone_number: String
         profile_photo: String
-        interests: [String],
+        interests: [String]
         equipped_badges: [String]
+        token: String
         longitude: Float,
         latitude: Float,
+
         is_active: Boolean
     }
 
