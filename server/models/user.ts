@@ -71,8 +71,8 @@ const UserSchema = new mongoose.Schema({
   blocked_users: [String],
   blocked_by_users: [String],
   equipped_badges: [String],
-  longitude: String,
-  latitude: String,
+  longitude: Number,
+  latitude: Number,
   isActive: Boolean
 })
 
