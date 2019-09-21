@@ -22,7 +22,7 @@ interface NewUser {
   exp: number
   lvl: number
   stats: Stats
-  imei: string
+  token: string
 }
 
 interface UpdatedUser {
@@ -318,9 +318,9 @@ const root = {
         blocked_users: [],
         blocked_by_users: [],
         equipped_badges: [],
-        longitude: '',
-        latitude: '',
-        isActive: false
+        longitude: 0,
+        latitude: 0,
+        is_active: false
       })
       const hash = bcrypt.hashSync(userObj.password, 10)
       userObj.password_hash = hash

@@ -280,9 +280,10 @@ wss.on('connection', ws => {
     //will alert user with textinput
     //send answers to each user
     //q0 starts game, q1 sends question, q2 sends answer
-    //[0] - Quiz Game Code, [1] - Origin Email, [2] - Hangout ID, [3] - Partner Email
+    //[0] - Quiz Game Code, [1] - Origin Email, [2] - Origin First Name, [3] - Hangout ID, [4] - Partner Email
     if (message[0] === 'q0') {
       if (games.gameList[message[2]] && clients.clientList[message[1]]) {
+        //do we need to create a new Player instance?
         games.gameList[message[2]].addPlayer(clients.clientList[message[1]])
       } else {
         const newQuizGame = new QuizGame(message[2], [message[1], message[3]])
@@ -290,9 +291,12 @@ wss.on('connection', ws => {
         games.addGame(newQuizGame)
       }
     }
+    //Can we export array of questions and simply send an index over the websocket?
+    //[0] - Quiz Game Code, [1] - Origin Email, [2] Partner Email, [3] Question #?
     if (message[0] === 'q1') {
     
     }
+    //[0] - Quiz Game Code, [1] - Origin Email, [2] Partner Email, [3] Next Question #, [4] Input
     if (message[0] === 'q2') {
 
     }

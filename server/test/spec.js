@@ -54,7 +54,7 @@ describe('GraphQL Queries', () => {
                         event_id
                         is_creator
                     }
-                    imei
+                    token
                 }
             }`
     }
@@ -209,7 +209,7 @@ describe('GraphQL Queries', () => {
         done()
       })
   })
-  it('should query all chats by array of chatIds', done => {
+  it('should query chat by chatId', done => {
     const testMessages = [
       {
         content: 'Hey',
@@ -231,9 +231,9 @@ describe('GraphQL Queries', () => {
       }
     ]
 
-    const chatsQuery = {
+    const chatQuery = {
       query: `query {
-              Chats(chatIds: [2]) {
+              Chat(chatId: 2) {
                   messages {
                       content
                       from {
@@ -245,12 +245,11 @@ describe('GraphQL Queries', () => {
     }
     request
       .post('/graphql')
-      .send(chatsQuery)
+      .send(chatQuery)
       .expect(200)
       .end((err, res) => {
         if (err) return done(err)
-        expect(res.body.data.Chats).to.be.an('array')
-        const result = res.body.data.Chats.pop().messages
+        const result = res.body.data.Chat.messages
         expect(result).to.deep.include(testMessages[0])
         expect(result).to.deep.include(testMessages[1])
         expect(result).to.deep.include(testMessages[2])

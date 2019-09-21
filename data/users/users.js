@@ -59,7 +59,10 @@ const users = [
     blocked_users: [],
     blocked_by_users: [],
     equipped_badges: ['funny_silver', 'kind_bronze', 'intellectual_bronze'],
-    imei: '358363043724657'
+    longitude: 139.7275941,
+    latitude: 35.6579715,
+    is_active: true,
+    token: ''
   },
   {
     first_name: 'Sara',
@@ -107,7 +110,10 @@ const users = [
     blocked_users: [],
     blocked_by_users: [],
     equipped_badges: ['kind_silver', 'intellectual_gold', 'therapeutic_silver'],
-    imei: '356628020481477'
+    longitude: 139.798799,
+    latitude: 40,
+    is_active: true,
+    token: ''
   },
   {
     first_name: 'Aaron',
@@ -155,7 +161,10 @@ const users = [
     blocked_users: [],
     blocked_by_users: [],
     equipped_badges: ['intellectual_bronze'],
-    imei: '860588012837160'
+    longitude: 139.781029,
+    latitude: 35.742322,
+    is_active: true,
+    token: ''
   },
   {
     first_name: 'Lily',
@@ -203,7 +212,10 @@ const users = [
     blocked_users: [],
     blocked_by_users: [],
     equipped_badges: ['intellectual_gold', 'kind_silver', 'funny_bronze'],
-    imei: '350751383349937'
+    longitude: 139.732985,
+    latitude: 35.662649,
+    is_active: true,
+    token: ''
   },
   {
     first_name: 'James',
@@ -251,7 +263,10 @@ const users = [
     blocked_users: [],
     blocked_by_users: [],
     equipped_badges: ['funny_bronze', 'intellectual_bronze', 'kind_bronze'],
-    imei: '20309624801284'
+    longitude: 139.700581,
+    latitude: 35.659825,
+    is_active: true,
+    token: ''
   }
 ]
 
