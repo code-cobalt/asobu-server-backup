@@ -20,8 +20,7 @@ const schema = buildSchema(`
         interests: [String]
         longitude: Int,
         latitude: Int,
-
-        isActive: Boolean
+        is_active: Boolean
     }
 
     type UserChat {
@@ -70,7 +69,7 @@ const schema = buildSchema(`
         imei: String
         longitude: Int,
         latitude: Int,
-        isActive: Boolean
+        is_active: Boolean
     }
 
     type Event {
@@ -178,7 +177,7 @@ const schema = buildSchema(`
         equipped_badges: [String]
         longitude: Int,
         latitude: Int,
-        isActive: Boolean
+        is_active: Boolean
     }
 
     input NewMessage {
