@@ -22,7 +22,7 @@ interface NewUser {
   exp: number
   lvl: number
   stats: Stats
-  imei: string
+  token: string
 }
 
 interface UpdatedUser {

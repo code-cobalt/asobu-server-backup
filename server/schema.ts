@@ -66,7 +66,7 @@ const schema = buildSchema(`
         blocked_users: [String]
         blocked_by_users: [String]
         equipped_badges: [String]
-        imei: String
+        token: String
         longitude: Int,
         latitude: Int,
         is_active: Boolean
@@ -163,7 +163,7 @@ const schema = buildSchema(`
         interests: [String]
         exp: Int
         lvl: Int
-        imei: String
+        token: String
     }
 
     input UpdatedUser {
@@ -172,7 +172,6 @@ const schema = buildSchema(`
         email: String
         phone_number: String
         profile_photo: String
-
         interests: [String],
         equipped_badges: [String]
         longitude: Int,
