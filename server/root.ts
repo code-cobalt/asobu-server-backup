@@ -89,9 +89,6 @@ interface Message {
   content: string
 }
 
-//starting chatId at 5 to avoid duplication with seeds
-let chatId: number = 5
-
 // validation methods will return string with error message if not valid
 const validateNewUser = (newUser: NewUser) => {
   return 'valid'
@@ -646,8 +643,9 @@ const root = {
         )
         return existingChat
       } else {
-        //create new unique chatId
-        const newChat = ++chatId
+        //generate unique chatId from empty message. This way impossible to have duplicate chatIds within database.
+        const emptyMessage = await Message.create({})
+        const chatId = emptyMessage._id
         //delete hangout request and create new chat for each user
         await User.updateOne(
           { email: params.fromUserEmail },
@@ -656,7 +654,7 @@ const root = {
 
             $push: {
               chats: {
-                chat_id: newChat,
+                chat_id: chatId,
                 participants: [
                   {
                     email: currentUser.email,
@@ -670,7 +668,7 @@ const root = {
           }
         )
         const currentUserChat = {
-          chat_id: newChat,
+          chat_id: chatId,
           participants: [
             {
               email: fromUser.email,
