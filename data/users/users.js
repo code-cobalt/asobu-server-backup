@@ -23,7 +23,7 @@ const users = [
     },
     chats: [
       {
-        chat_id: 1,
+        chat_id: '1',
         participants: [
           {
             first_name: 'Sara',
@@ -34,7 +34,7 @@ const users = [
         ]
       },
       {
-        chat_id: 2,
+        chat_id: '2',
         participants: [
           {
             first_name: 'Aaron',
@@ -85,7 +85,7 @@ const users = [
     },
     chats: [
       {
-        chat_id: 1,
+        chat_id: '1',
         participants: [
           {
             first_name: 'Jerry',
@@ -136,7 +136,7 @@ const users = [
     },
     chats: [
       {
-        chat_id: 2,
+        chat_id: '2',
         participants: [
           {
             first_name: 'Jerry',
@@ -187,7 +187,7 @@ const users = [
     },
     chats: [
       {
-        chat_id: 3,
+        chat_id: '3',
         participants: [
           {
             first_name: 'James',
@@ -238,7 +238,7 @@ const users = [
     },
     chats: [
       {
-        chat_id: 3,
+        chat_id: '3',
         participants: [
           {
             first_name: 'Lily',
