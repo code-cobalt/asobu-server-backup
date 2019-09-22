@@ -333,16 +333,105 @@ const root = {
   },
 
   UpdateUser: async params => {
-    // TO DO When a user is updated, must also update userlimited object in all other places they can be located:
-    // event attendees, comments, & creator,
-    // messages,
-    // user chats
-    // user sent and received hangout requests,
-    // ongoing hangouts,
-    // pending reviews
-    //yikes...!
+    // When a user is updated, must also update userlimited object in all other places they can be located:
     const validation = validateUpdatedUser(params.updatedUser)
     if (validation === 'valid') {
+      const updatedUserLimited = {
+        first_name: params.updatedUser.first_name,
+        email: params.updatedUser.email,
+        profile_photo: params.updatedUser.profile_photo
+      }
+      const updatedHangoutUserLimited = {
+        ...updatedUserLimited,
+        equipped_badges: params.updatedUser.equipped_badges
+      }
+      const originalUser = await User.find({ email: params.userEmail })
+      //only update the following if email, first_name, profile_photo, or equipped_badges have changed:
+      if (
+        JSON.stringify(updatedHangoutUserLimited) !==
+        JSON.stringify({
+          first_name: originalUser.first_name,
+          email: originalUser.email,
+          profile_photo: originalUser.profile_photo,
+          equipped_badges: originalUser.equipped_badges
+        })
+      ) {
+        // update user in other users with chat
+        await User.updateMany(
+          { 'chats.participants.email': params.userEmail },
+          { $set: { 'chats.$.participants': updatedUserLimited } }
+        )
+        // update user in other users with sent hangout request
+        await User.updateMany(
+          { 'sent_hangout_requests.email': params.userEmail },
+          { $set: { sent_hangout_requests: updatedHangoutUserLimited } }
+        )
+        // update user in other users with received hangout request
+        await User.updateMany(
+          { 'received_hangout_requests.email': params.userEmail },
+          { $set: { received_hangout_requests: updatedHangoutUserLimited } }
+        )
+        // update user in other users with accepted hangout request
+        await User.updateMany(
+          { 'accepted_hangout_requests.email': params.userEmail },
+          { $set: { accepted_hangout_requests: updatedHangoutUserLimited } }
+        )
+        // update user in other users with ongoing hangout request
+        await User.updateMany(
+          { 'ongoing_hangouts.participants.email': params.userEmail },
+          {
+            $set: {
+              'ongoing_hangouts.$.participants': updatedHangoutUserLimited
+            }
+          }
+        )
+        // update all messages from user
+        await Message.updateMany(
+          { 'from.email': params.userEmail },
+          { $set: { from: updatedUserLimited } }
+        )
+        // update hangouts with user
+        await Hangout.updateMany(
+          { 'participants.email': params.userEmail },
+          { $set: { participants: updatedHangoutUserLimited } }
+        )
+        // update event comments posted by user
+        await Event.updateMany(
+          { 'comments.from.email': params.userEmail },
+          { $set: { 'comments.$.from': updatedUserLimited } }
+        )
+        // update event attendees with user
+        await Event.updateMany(
+          { 'attendees.email': params.userEmail },
+          { $set: { attendees: updatedUserLimited } }
+        )
+        // update event creator created by user
+        await Event.updateMany(
+          { 'creator.email': params.userEmail },
+          { $set: { creator: updatedUserLimited } }
+        )
+      }
+
+      // the following only need to change if the email changes:
+      if (params.userEmail !== params.updatedUser.email) {
+        // update user in other users with blocked user
+        await User.updateMany(
+          { blocked_users: params.userEmail },
+          { $set: { 'blocked_users.$': params.updatedUser.email } }
+        )
+        // update user in other users with blocked by user
+        await User.updateMany(
+          { blocked_by_users: params.userEmail },
+          { $set: { 'blocked_by_users.$': params.updatedUser.email } }
+        )
+        // update user email in other users with pending review. keep original information so that user can remember properly when
+        // reviewing, but update email so that it can be posted to database properly.
+        await User.updateMany(
+          { 'pending_reviews.email': params.userEmail },
+          { $set: { 'pending_reviews.$.email': params.updatedUser.email } }
+        )
+      }
+      //update and return actual user
       return await User.findOneAndUpdate(
         { email: params.userEmail },
         params.updatedUser,
