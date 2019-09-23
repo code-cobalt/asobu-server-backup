@@ -114,6 +114,29 @@ const validateMessage = (message: Message) => {
   return 'valid'
 }
 
+const checkLevel = (currentLevel: number, currentExp: number) => {
+  if (currentExp >= 100 && currentExp < 200 && currentLevel !== 2) {
+    return 2
+  } else if (currentExp >= 200 && currentExp < 400 && currentLevel !== 3) {
+    return 3
+  } else if (currentExp >= 400 && currentExp < 600 && currentLevel !== 4) {
+    return 4
+  } else if (currentExp >= 600 && currentExp < 900 && currentLevel !== 5) {
+    return 5
+  } else if (currentExp >= 900 && currentExp < 1200 && currentLevel !== 6) {
+    return 6
+  } else if (currentExp >= 1200 && currentExp < 1600 && currentLevel !== 7) {
+    return 7
+  } else if (currentExp >= 1600 && currentExp < 2000 && currentLevel !== 8) {
+    return 8
+  } else if (currentExp >= 2000 && currentExp < 3000 && currentLevel !== 9) {
+    return 9
+  } else if (currentExp >= 3000 && currentLevel !== 10) {
+    return 10
+  }
+  return 1
+}
+
 interface UserChat {
   chat_id: number
   participants: Array<UserLimited>
@@ -527,7 +550,7 @@ const root = {
     for (const stat in params.newStats) {
       updatedStats[stat] += params.newStats[stat]
     }
-    const partner = await User.updateOne(
+    const partner = await User.findOneAndUpdate(
       { email: params.reviewedUserEmail },
       { stats: updatedStats }
     )
@@ -535,13 +558,18 @@ const root = {
     if (partner.lvl === 1 || partner.lvl >= 10) {
       newExp = 120
     }
-    await User.updateOne(
+
+    const updatedUser = await User.findOneAndUpdate(
       { email: params.currentUserEmail },
       {
         $pull: { pending_reviews: { email: params.reviewedUserEmail } },
         $inc: { exp: newExp }
-      }
+      },
+      { new: true }
     )
+    const level = checkLevel(updatedUser.lvl, updatedUser.exp)
+    updatedUser.lvl = level
+    updatedUser.save()
     return updatedStats
   },
 
