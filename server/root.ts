@@ -590,14 +590,23 @@ const root = {
         profile_photo: toUser.profile_photo,
         equipped_badges: toUser.equipped_badges
       }
-      await User.updateOne(
-        { email: params.currentUserEmail },
-        { $push: { sent_hangout_requests: toUserLimited }, $inc: { exp: 10 } }
-      )
-      await User.updateOne(
+      const partner = await User.findOneAndUpdate(
         { email: params.toUserEmail },
         { $push: { received_hangout_requests: fromUserLimited } }
       )
+      //triple exp points if partner is level 1 or >= 10
+      let newExp = 10
+      if (partner.lvl === 1 || partner.lvl >= 10) {
+        newExp = 30
+      }
+      await User.updateOne(
+        { email: params.currentUserEmail },
+        {
+          $push: { sent_hangout_requests: toUserLimited },
+          $inc: { exp: newExp }
+        }
+      )
+
       return `${params.currentUserEmail} has successfully sent a hangout request to ${params.toUserEmail}!`
     }
   },
