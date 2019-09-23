@@ -24,7 +24,7 @@ const schema = buildSchema(`
     }
 
     type UserChat {
-        chat_id: Int
+        chat_id: String
         participants: [UserLimited]
     }
 
@@ -89,7 +89,7 @@ const schema = buildSchema(`
 
     type Message {
         id: String
-        chat_id: Int
+        chat_id: String
         from: UserLimited
         timestamp: DateTime
         content: String
@@ -100,7 +100,7 @@ const schema = buildSchema(`
     }
 
     type Chat {
-        _id: Int,
+        _id: String,
         messages: [Message]
     }
 
@@ -118,11 +118,6 @@ const schema = buildSchema(`
         kind: Int
         therapeutic: Int
         interesting: Int
-    }
-
-    input UserChatInput {
-        chat_id: Int
-        participants: [UserLimitedInput]
     }
 
     input UserEventInput {
@@ -182,7 +177,7 @@ const schema = buildSchema(`
     }
 
     input NewMessage {
-        chat_id: Int!
+        chat_id: String!
         from: UserLimitedInput!
         content: String!
     }
@@ -198,7 +193,7 @@ const schema = buildSchema(`
         Login(userEmail: String!, userPassword: String!): User
         Events: [Event]
         Event(eventId: String!): Event
-        Chat(chatId: Int!): Chat
+        Chat(chatId: String!): Chat
         Hangouts: [Hangout]
         Hangout(hangoutId: String!): Hangout
     }
@@ -223,7 +218,7 @@ const schema = buildSchema(`
         DeclineHangoutRequest(currentUserEmail: String!, fromUserEmail: String!): String
         StartHangout(participants: [UserLimitedInput]!): String
         FinishHangout(hangoutId: String!): String
-        BlockUser(currentUserEmail: String!, blockedUserEmail: String, chatId: Int!): String
+        BlockUser(currentUserEmail: String!, blockedUserEmail: String, chatId: String!): String
         UnblockUser(currentUserEmail: String!, blockedUserEmail: String): String
     }
 `)
