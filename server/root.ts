@@ -527,15 +527,19 @@ const root = {
     for (const stat in params.newStats) {
       updatedStats[stat] += params.newStats[stat]
     }
-    await User.updateOne(
+    const partner = await User.updateOne(
       { email: params.reviewedUserEmail },
       { stats: updatedStats }
     )
+    let newExp = 40
+    if (partner.lvl === 1 || partner.lvl >= 10) {
+      newExp = 120
+    }
     await User.updateOne(
       { email: params.currentUserEmail },
       {
         $pull: { pending_reviews: { email: params.reviewedUserEmail } },
-        $inc: { exp: 40 }
+        $inc: { exp: newExp }
       }
     )
     return updatedStats
