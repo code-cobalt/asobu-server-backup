@@ -798,7 +798,7 @@ const root = {
       { _id: params.hangoutId },
       { status: 'complete' }
     )
-    await User.updateOne(
+    const userOne = await User.findOneAndUpdate(
       { email: hangout.participants[0].email },
       {
         $pull: {
@@ -810,9 +810,15 @@ const root = {
           pending_reviews: hangout.participants[1]
         },
         $inc: { exp: 30 }
-      }
+      },
+      { new: true }
     )
-    await User.updateOne(
+    const userOneLevel = checkLevel(userOne.lvl, userOne.exp)
+    if (userOneLevel !== userOne.lvl) {
+      userOne.lvl = userOneLevel
+      userOne.save()
+    }
+    const userTwo = await User.findOneAndUpdate(
       { email: hangout.participants[1].email },
       {
         $pull: {
@@ -824,8 +830,14 @@ const root = {
           pending_reviews: hangout.participants[0]
         },
         $inc: { exp: 30 }
-      }
+      },
+      { new: true }
     )
+    const userTwoLevel = checkLevel(userTwo.lvl, userTwo.exp)
+    if (userTwoLevel !== userTwo.lvl) {
+      userTwo.lvl = userTwoLevel
+      userTwo.save()
+    }
     return `${hangout.participants[0].first_name} and ${hangout.participants[1].first_name} have finished hanging out.`
   },
 
