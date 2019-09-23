@@ -114,17 +114,17 @@ const validateMessage = (message: Message) => {
   return 'valid'
 }
 
-const checkLevel = (currentLevel: number, currentExp: number) => {
-  if (currentExp >= 100 && currentExp < 200 && currentLevel !== 2) return 2
-  if (currentExp >= 200 && currentExp < 400 && currentLevel !== 3) return 3
-  if (currentExp >= 400 && currentExp < 600 && currentLevel !== 4) return 4
-  if (currentExp >= 600 && currentExp < 900 && currentLevel !== 5) return 5
-  if (currentExp >= 900 && currentExp < 1200 && currentLevel !== 6) return 6
-  if (currentExp >= 1200 && currentExp < 1600 && currentLevel !== 7) return 7
-  if (currentExp >= 1600 && currentExp < 2000 && currentLevel !== 8) return 8
-  if (currentExp >= 2000 && currentExp < 3000 && currentLevel !== 9) return 9
-  if (currentExp >= 3000 && currentLevel !== 10) return 10
-  return 1
+const checkLevel = (currentExp: number) => {
+  if (currentExp < 100) return 1
+  if (currentExp >= 100 && currentExp < 200) return 2
+  if (currentExp >= 200 && currentExp < 400) return 3
+  if (currentExp >= 600 && currentExp < 900) return 5
+  if (currentExp >= 400 && currentExp < 600) return 4
+  if (currentExp >= 900 && currentExp < 1200) return 6
+  if (currentExp >= 1200 && currentExp < 1600) return 7
+  if (currentExp >= 1600 && currentExp < 2000) return 8
+  if (currentExp >= 2000 && currentExp < 3000) return 9
+  if (currentExp >= 3000) return 10
 }
 
 interface UserChat {
@@ -234,7 +234,7 @@ const root = {
         },
         { new: true }
       )
-      const creatorLevel = checkLevel(creator.lvl, creator.exp)
+      const creatorLevel = checkLevel(creator.exp)
       if (creatorLevel !== creator.lvl) {
         creator.lvl = creatorLevel
         creator.save()
@@ -569,7 +569,7 @@ const root = {
       },
       { new: true }
     )
-    const level = checkLevel(updatedUser.lvl, updatedUser.exp)
+    const level = checkLevel(updatedUser.exp)
     if (level !== updatedUser.lvl) {
       updatedUser.lvl = level
       updatedUser.save()
@@ -583,7 +583,7 @@ const root = {
       { $inc: { exp: params.points } },
       { new: true }
     )
-    const level = checkLevel(user.lvl, user.exp)
+    const level = checkLevel(user.exp)
     await User.updateOne({ email: params.userEmail }, { lvl: level })
     //return new exp total
     return user.exp
@@ -625,7 +625,7 @@ const root = {
         },
         { new: true }
       )
-      const level = checkLevel(updatedUser.lvl, updatedUser.exp)
+      const level = checkLevel(updatedUser.exp)
       if (level !== updatedUser.lvl) {
         updatedUser.lvl = level
         updatedUser.save()
@@ -766,7 +766,7 @@ const root = {
       },
       { new: true }
     )
-    const userOneLevel = checkLevel(userOne.lvl, userOne.exp)
+    const userOneLevel = checkLevel(userOne.exp)
     if (userOneLevel !== userOne.lvl) {
       userOne.lvl = userOneLevel
       userOne.save()
@@ -785,7 +785,7 @@ const root = {
       },
       { new: true }
     )
-    const userTwoLevel = checkLevel(userTwo.lvl, userTwo.exp)
+    const userTwoLevel = checkLevel(userTwo.exp)
     if (userTwoLevel !== userTwo.lvl) {
       userTwo.lvl = userTwoLevel
       userTwo.save()
@@ -815,7 +815,7 @@ const root = {
         },
         { new: true }
       )
-      const userOneLevel = checkLevel(userOne.lvl, userOne.exp)
+      const userOneLevel = checkLevel(userOne.exp)
       if (userOneLevel !== userOne.lvl) {
         userOne.lvl = userOneLevel
         userOne.save()
@@ -835,7 +835,7 @@ const root = {
         },
         { new: true }
       )
-      const userTwoLevel = checkLevel(userTwo.lvl, userTwo.exp)
+      const userTwoLevel = checkLevel(userTwo.exp)
       if (userTwoLevel !== userTwo.lvl) {
         userTwo.lvl = userTwoLevel
         userTwo.save()
