@@ -236,10 +236,19 @@ const root = {
     })
     if (validation === 'valid') {
       const event = await Event.create(newEvent)
-      await User.updateOne(
+      const creator = await User.findOneAndUpdate(
         { email: event.creator.email },
-        { $push: { events: { event_id: event.id, is_creator: true } } }
+        {
+          $push: { events: { event_id: event.id, is_creator: true } },
+          $inc: { exp: 20 }
+        },
+        { new: true }
       )
+      const creatorLevel = checkLevel(creator.lvl, creator.exp)
+      if (creatorLevel !== creator.lvl) {
+        creator.lvl = creatorLevel
+        creator.save()
+      }
       return event
     } else {
       //specific validation error will be nested inside error object
