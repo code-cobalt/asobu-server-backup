@@ -568,8 +568,10 @@ const root = {
       { new: true }
     )
     const level = checkLevel(updatedUser.lvl, updatedUser.exp)
-    updatedUser.lvl = level
-    updatedUser.save()
+    if (level !== updatedUser.lvl) {
+      updatedUser.lvl = level
+      updatedUser.save()
+    }
     return updatedStats
   },
 
@@ -579,26 +581,8 @@ const root = {
       { $inc: { exp: params.points } },
       { new: true }
     )
-    // implement level checking
-    if (user.exp >= 100 && user.exp < 200 && user.lvl !== 2) {
-      await User.updateOne({ email: params.userEmail }, { lvl: 2 })
-    } else if (user.exp >= 200 && user.exp < 400 && user.lvl !== 3) {
-      await User.updateOne({ email: params.userEmail }, { lvl: 3 })
-    } else if (user.exp >= 400 && user.exp < 600 && user.lvl !== 4) {
-      await User.updateOne({ email: params.userEmail }, { lvl: 4 })
-    } else if (user.exp >= 600 && user.exp < 900 && user.lvl !== 5) {
-      await User.updateOne({ email: params.userEmail }, { lvl: 5 })
-    } else if (user.exp >= 900 && user.exp < 1200 && user.lvl !== 6) {
-      await User.updateOne({ email: params.userEmail }, { lvl: 6 })
-    } else if (user.exp >= 1200 && user.exp < 1600 && user.lvl !== 7) {
-      await User.updateOne({ email: params.userEmail }, { lvl: 7 })
-    } else if (user.exp >= 1600 && user.exp < 2000 && user.lvl !== 8) {
-      await User.updateOne({ email: params.userEmail }, { lvl: 8 })
-    } else if (user.exp >= 2000 && user.exp < 3000 && user.lvl !== 9) {
-      await User.updateOne({ email: params.userEmail }, { lvl: 9 })
-    } else if (user.exp >= 3000 && user.lvl !== 10) {
-      await User.updateOne({ email: params.userEmail }, { lvl: 10 })
-    }
+    const level = checkLevel(user.lvl, user.exp)
+    await User.updateOne({ email: params.userEmail }, { lvl: level })
     //return new exp total
     return user.exp
   },
@@ -631,13 +615,19 @@ const root = {
       if (partner.lvl === 1 || partner.lvl >= 10) {
         newExp = 30
       }
-      await User.updateOne(
+      const updatedUser = await User.findOneAndUpdate(
         { email: params.currentUserEmail },
         {
           $push: { sent_hangout_requests: toUserLimited },
           $inc: { exp: newExp }
-        }
+        },
+        { new: true }
       )
+      const level = checkLevel(updatedUser.lvl, updatedUser.exp)
+      if (level !== updatedUser.lvl) {
+        updatedUser.lvl = level
+        updatedUser.save()
+      }
 
       return `${params.currentUserEmail} has successfully sent a hangout request to ${params.toUserEmail}!`
     }
