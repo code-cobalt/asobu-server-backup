@@ -750,7 +750,7 @@ const root = {
       status: 'ongoing'
     })
 
-    await User.updateOne(
+    const userOne = await User.findOneAndUpdate(
       { email: params.participants[0].email },
       {
         $push: {
@@ -761,9 +761,15 @@ const root = {
         },
         $pull: { accepted_hangouts: { email: params.participants[1].email } },
         $inc: { exp: 50 }
-      }
+      },
+      { new: true }
     )
-    await User.updateOne(
+    const userOneLevel = checkLevel(userOne.lvl, userOne.exp)
+    if (userOneLevel !== userOne.lvl) {
+      userOne.lvl = userOneLevel
+      userOne.save()
+    }
+    const userTwo = await User.findOneAndUpdate(
       { email: params.participants[1].email },
       {
         $push: {
@@ -774,8 +780,14 @@ const root = {
         },
         $pull: { accepted_hangouts: { email: params.participants[0].email } },
         $inc: { exp: 50 }
-      }
+      },
+      { new: true }
     )
+    const userTwoLevel = checkLevel(userTwo.lvl, userTwo.exp)
+    if (userTwoLevel !== userTwo.lvl) {
+      userTwo.lvl = userTwoLevel
+      userTwo.save()
+    }
     return hangout._id
   },
 
