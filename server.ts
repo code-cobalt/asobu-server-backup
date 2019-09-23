@@ -271,9 +271,14 @@ wss.on('connection', ws => {
     //[0] - Message Code, [1] - Target Email, [2] - Chat ID
     if (message[0] === 'm0') {
       console.log(`${message[1]} was sent an update for chat ${message[2]}.`)
-      if (clients.clientList[message[1]])
+      if (clients.clientList[message[1]]) {
         clients.clientList[message[1]].socket.send(`m0 ${message[2]}`)
-        console.log(`${message[2]} was notified.`)
+        console.log(`${message[1]} was notified.`)
+      } else {
+        let token = await getToken(message[1])
+        sendPush(token, 'New Message', 'You have a new chat message.')
+        console.log(`Push notification sent to ${message[1]}.`)
+      }
     }
     //[0] - Hangout Request Code, [1] - Sender Email, [2] - Target Email
     if (message[0] === 'h0') {
@@ -282,9 +287,9 @@ wss.on('connection', ws => {
         clients.clientList[message[2]].socket.send(`h0 ${message[1]}`)
         console.log(`${message[2]} was notified.`)
       } else {
-        const token = await getToken(message[2])
+        let token = await getToken(message[2])
         sendPush(token, 'New Hangout Request', 'You have a received a new hangout request!')
-        console.log('sendPush invoked')
+        console.log(`Push notification sent to ${message[2]}.`)
       }
     }
     //[0] - Hangout Accept Code, [1] - Accepting Email, [2] - Target Email, [3] - Accepting First Name
@@ -293,6 +298,10 @@ wss.on('connection', ws => {
       if (clients.clientList[message[2]]) {
         clients.clientList[message[2]].socket.send(`h1 ${message[1]} ${message[3]}`)
         console.log(`${message[2]} was notified.`)
+      } else {
+        let token = await getToken(message[2])
+        sendPush(token, 'Hangout Request Accepted', 'Your hangout request was accepted!')
+        console.log(`Push notification sent to ${message[2]}.`)
       }
     }
     //[0] - Start Hangout Request Code, [1] - Sender Email, [2] - Target Email, [3] - Sender First Name
@@ -301,6 +310,10 @@ wss.on('connection', ws => {
       if (clients.clientList[message[2]]) {
         clients.clientList[message[2]].socket.send(`s0 ${message[1]} ${message[3]}`)
         console.log(`${message[2]} was notified.`)
+      } else {
+        let token = await getToken(message[2])
+        sendPush(token, 'Start Your Hangout', 'Your partner is ready to start your hangout!')
+        console.log(`Push notification sent to ${message[2]}.`)
       }
     }
     //[0] - Start Hangout Confirmed Code, [1] - Sender Email, [2] - Target Email, [3] - hangoutId
