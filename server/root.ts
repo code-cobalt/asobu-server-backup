@@ -533,7 +533,10 @@ const root = {
     )
     await User.updateOne(
       { email: params.currentUserEmail },
-      { $pull: { pending_reviews: { email: params.reviewedUserEmail } } }
+      {
+        $pull: { pending_reviews: { email: params.reviewedUserEmail } },
+        $inc: { exp: 40 }
+      }
     )
     return updatedStats
   },
@@ -589,7 +592,7 @@ const root = {
       }
       await User.updateOne(
         { email: params.currentUserEmail },
-        { $push: { sent_hangout_requests: toUserLimited } }
+        { $push: { sent_hangout_requests: toUserLimited }, $inc: { exp: 10 } }
       )
       await User.updateOne(
         { email: params.toUserEmail },
@@ -725,7 +728,8 @@ const root = {
             participants: [params.participants[1]]
           }
         },
-        $pull: { accepted_hangouts: { email: params.participants[1].email } }
+        $pull: { accepted_hangouts: { email: params.participants[1].email } },
+        $inc: { exp: 50 }
       }
     )
     await User.updateOne(
@@ -737,7 +741,8 @@ const root = {
             participants: [params.participants[0]]
           }
         },
-        $pull: { accepted_hangouts: { email: params.participants[0].email } }
+        $pull: { accepted_hangouts: { email: params.participants[0].email } },
+        $inc: { exp: 50 }
       }
     )
     return hangout._id
@@ -760,7 +765,8 @@ const root = {
         },
         $push: {
           pending_reviews: hangout.participants[1]
-        }
+        },
+        $inc: { exp: 30 }
       }
     )
     await User.updateOne(
@@ -773,7 +779,8 @@ const root = {
         },
         $push: {
           pending_reviews: hangout.participants[0]
-        }
+        },
+        $inc: { exp: 30 }
       }
     )
     return `${hangout.participants[0].first_name} and ${hangout.participants[1].first_name} have finished hanging out.`
