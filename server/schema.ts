@@ -50,6 +50,7 @@ const schema = buildSchema(`
         first_name: String
         last_name: String
         email: String
+        password_hash: String
         phone_number: String
         profile_photo: String
         interests: [String]
