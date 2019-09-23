@@ -543,20 +543,17 @@ const root = {
   },
 
   ReviewUser: async params => {
-    console.log('inside review user')
     // delete reviewedUser from currentUser's pending reviews
     const user = await User.findOne({ email: params.reviewedUserEmail })
     const updatedStats = Object.assign({}, user.stats)
     for (const stat in params.newStats) {
       updatedStats[stat] += params.newStats[stat]
     }
-    console.log(updatedStats)
     const partner = await User.findOneAndUpdate(
       { email: params.reviewedUserEmail },
       { stats: updatedStats }
     )
     let newExp = 40
-    console.log('partner level:', partner.lvl)
     if (partner.lvl === 1 || partner.lvl >= 10) {
       newExp = 120
     }
