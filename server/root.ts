@@ -118,8 +118,8 @@ const checkLevel = (currentExp: number) => {
   if (currentExp < 100) return 1
   if (currentExp >= 100 && currentExp < 200) return 2
   if (currentExp >= 200 && currentExp < 400) return 3
-  if (currentExp >= 600 && currentExp < 900) return 5
   if (currentExp >= 400 && currentExp < 600) return 4
+  if (currentExp >= 600 && currentExp < 900) return 5
   if (currentExp >= 900 && currentExp < 1200) return 6
   if (currentExp >= 1200 && currentExp < 1600) return 7
   if (currentExp >= 1600 && currentExp < 2000) return 8
