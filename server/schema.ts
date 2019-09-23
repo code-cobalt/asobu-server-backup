@@ -41,7 +41,8 @@ const schema = buildSchema(`
     }
 
     type Hangout {
-        hangout_id: String
+        id: String
+        status: String
         participants: [UserLimited]
     }
 
