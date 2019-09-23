@@ -115,25 +115,15 @@ const validateMessage = (message: Message) => {
 }
 
 const checkLevel = (currentLevel: number, currentExp: number) => {
-  if (currentExp >= 100 && currentExp < 200 && currentLevel !== 2) {
-    return 2
-  } else if (currentExp >= 200 && currentExp < 400 && currentLevel !== 3) {
-    return 3
-  } else if (currentExp >= 400 && currentExp < 600 && currentLevel !== 4) {
-    return 4
-  } else if (currentExp >= 600 && currentExp < 900 && currentLevel !== 5) {
-    return 5
-  } else if (currentExp >= 900 && currentExp < 1200 && currentLevel !== 6) {
-    return 6
-  } else if (currentExp >= 1200 && currentExp < 1600 && currentLevel !== 7) {
-    return 7
-  } else if (currentExp >= 1600 && currentExp < 2000 && currentLevel !== 8) {
-    return 8
-  } else if (currentExp >= 2000 && currentExp < 3000 && currentLevel !== 9) {
-    return 9
-  } else if (currentExp >= 3000 && currentLevel !== 10) {
-    return 10
-  }
+  if (currentExp >= 100 && currentExp < 200 && currentLevel !== 2) return 2
+  if (currentExp >= 200 && currentExp < 400 && currentLevel !== 3) return 3
+  if (currentExp >= 400 && currentExp < 600 && currentLevel !== 4) return 4
+  if (currentExp >= 600 && currentExp < 900 && currentLevel !== 5) return 5
+  if (currentExp >= 900 && currentExp < 1200 && currentLevel !== 6) return 6
+  if (currentExp >= 1200 && currentExp < 1600 && currentLevel !== 7) return 7
+  if (currentExp >= 1600 && currentExp < 2000 && currentLevel !== 8) return 8
+  if (currentExp >= 2000 && currentExp < 3000 && currentLevel !== 9) return 9
+  if (currentExp >= 3000 && currentLevel !== 10) return 10
   return 1
 }
 
