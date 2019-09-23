@@ -333,7 +333,7 @@ const root = {
         sent_hangout_requests: [],
         received_hangout_requests: [],
         ongoing_hangouts: [],
-        pending_revies: [],
+        pending_reviews: [],
         blocked_users: [],
         blocked_by_users: [],
         equipped_badges: [],
@@ -543,17 +543,20 @@ const root = {
   },
 
   ReviewUser: async params => {
+    console.log('inside review user')
     // delete reviewedUser from currentUser's pending reviews
     const user = await User.findOne({ email: params.reviewedUserEmail })
     const updatedStats = Object.assign({}, user.stats)
     for (const stat in params.newStats) {
       updatedStats[stat] += params.newStats[stat]
     }
+    console.log(updatedStats)
     const partner = await User.findOneAndUpdate(
       { email: params.reviewedUserEmail },
       { stats: updatedStats }
     )
     let newExp = 40
+    console.log('partner level:', partner.lvl)
     if (partner.lvl === 1 || partner.lvl >= 10) {
       newExp = 120
     }
@@ -793,51 +796,53 @@ const root = {
   FinishHangout: async params => {
     // change status of hangout to complete, delete each user from the other users' ongoing_hangouts,
     // and add each user to each other users' pending_reviews
-    const hangout = await Hangout.findOneAndUpdate(
-      { _id: params.hangoutId },
-      { status: 'complete' }
-    )
-    const userOne = await User.findOneAndUpdate(
-      { email: hangout.participants[0].email },
-      {
-        $pull: {
-          ongoing_hangouts: {
-            hangout_id: params.hangoutId
-          }
+    const hangout = await Hangout.findById(params.hangoutId)
+    if (hangout.status !== 'complete') {
+      hangout.status = 'complete'
+      hangout.save()
+      const userOne = await User.findOneAndUpdate(
+        { email: hangout.participants[0].email },
+        {
+          $pull: {
+            ongoing_hangouts: {
+              hangout_id: params.hangoutId
+            }
+          },
+          $push: {
+            pending_reviews: hangout.participants[1]
+          },
+          $inc: { exp: 30 }
         },
-        $push: {
-          pending_reviews: hangout.participants[1]
+        { new: true }
+      )
+      const userOneLevel = checkLevel(userOne.lvl, userOne.exp)
+      if (userOneLevel !== userOne.lvl) {
+        userOne.lvl = userOneLevel
+        userOne.save()
+      }
+      const userTwo = await User.findOneAndUpdate(
+        { email: hangout.participants[1].email },
+        {
+          $pull: {
+            ongoing_hangouts: {
+              hangout_id: params.hangoutId
+            }
+          },
+          $push: {
+            pending_reviews: hangout.participants[0]
+          },
+          $inc: { exp: 30 }
         },
-        $inc: { exp: 30 }
-      },
-      { new: true }
-    )
-    const userOneLevel = checkLevel(userOne.lvl, userOne.exp)
-    if (userOneLevel !== userOne.lvl) {
-      userOne.lvl = userOneLevel
-      userOne.save()
+        { new: true }
+      )
+      const userTwoLevel = checkLevel(userTwo.lvl, userTwo.exp)
+      if (userTwoLevel !== userTwo.lvl) {
+        userTwo.lvl = userTwoLevel
+        userTwo.save()
+      }
+      return `${hangout.participants[0].first_name} and ${hangout.participants[1].first_name} have finished hanging out.`
     }
-    const userTwo = await User.findOneAndUpdate(
-      { email: hangout.participants[1].email },
-      {
-        $pull: {
-          ongoing_hangouts: {
-            hangout_id: params.hangoutId
-          }
-        },
-        $push: {
-          pending_reviews: hangout.participants[0]
-        },
-        $inc: { exp: 30 }
-      },
-      { new: true }
-    )
-    const userTwoLevel = checkLevel(userTwo.lvl, userTwo.exp)
-    if (userTwoLevel !== userTwo.lvl) {
-      userTwo.lvl = userTwoLevel
-      userTwo.save()
-    }
-    return `${hangout.participants[0].first_name} and ${hangout.participants[1].first_name} have finished hanging out.`
+    return 'Hangout has already been finished.'
   },
 
   Hangouts: async () => {
