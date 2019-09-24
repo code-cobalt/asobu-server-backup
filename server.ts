@@ -94,14 +94,7 @@ interface Client {
   socket: WebSocket
   token: string
   heartbeat: boolean
-}
-
-interface Player {
-  email: string
-  socket: WebSocket
-  heartbeat: boolean
-  answer: string
-  hasAnswered: boolean
+  failedPings: number
 }
 
 interface Clients {
@@ -118,18 +111,9 @@ class Client {
     this.socket = socket
     this.token = token
     this.heartbeat = true
+    this.failedPings = 0
   }
 }
-
-// class Player {
-//   constructor(email, socket) {
-//     this.email = email
-//     this.socket = socket
-//     this.heartbeat = true
-//     this.answer = ''
-//     this.hasAnswered = false
-//   }
-// }
 
 class Clients {
   constructor() {
@@ -190,7 +174,7 @@ function sendPush(token, title, message) {
   axios
     .post('https://exp.host/--/api/v2/push/send', data, config)
     .catch(err => {
-      console.log('AXIOS ERROR FOR PUSH')
+      console.log('Axios push error:')
       console.log(err)
     })
 }
@@ -201,21 +185,32 @@ wss.on('connection', ws => {
     const message = msg.split(' ')
     //[0] - Login Code, [1] - User Email, [2] - User Token
     if (message[0] === 'l0') {
-      let newClient = new Client(message[1], ws, message[2])
-      clients.saveClient(newClient)
-      console.log(`${message[1]} has logged in. Token is ${message[2]}.`)
-      clients.clientList[message[1]].isAlive = true
-      const pulseCheck = setInterval(() => {
-        if (!newClient.heartbeat) {
-          clients.removeClient(newClient.email)
-          clearInterval(pulseCheck)
-          console.log(`${newClient.email} dropped.`)
-        } else {
-          newClient.heartbeat = false
-          newClient.socket.send('p0')
-          console.log(`Heartbeat sent to ${newClient.email}.`)
-        }
-      }, 30000)
+      if (clients.clientList[message[1]]) {
+        let newClient = new Client(message[1], ws, message[2])
+        Object.assign(clients.clientList[message[1]], newClient)
+        console.log(`${clients.clientList[message[1]].email} has relogged.`)
+      } else {
+        let newClient = new Client(message[1], ws, message[2])
+        clients.saveClient(newClient)
+        console.log(`${message[1]} has logged in. Token is ${message[2]}.`)
+        clients.clientList[message[1]].isAlive = true
+        clients.clientList[message[1]].failedPings = 0
+        const pulseCheck = setInterval(() => {
+          if (!clients.clientList[message[1]].heartbeat) {
+            clients.removeClient(clients.clientList[message[1]].email)
+            clearInterval(pulseCheck)
+            console.log(`${clients.clientList[message[1]].email} dropped.`)
+          } else {
+            clients.clientList[message[1]].failedPings++
+            if (clients.clientList[message[1]].failedPings > 2)
+              clients.clientList[message[1]].heartbeat = false
+            clients.clientList[message[1]].socket.send('p0')
+            console.log(
+              `Heartbeat sent to ${clients.clientList[message[1]].email}. Failure rate ${newClient.failedPings}.`
+            )
+          }
+        }, 15000)
+      }
     }
     if (message[0] === 'l1') {
       clients.removeClient(message[1])
@@ -223,6 +218,7 @@ wss.on('connection', ws => {
     }
     if (message[0] === 'p0') {
       if (clients.clientList[message[1]]) {
+        clients.clientList[message[1]].failedPings = 0
         clients.clientList[message[1]].heartbeat = true
         console.log(`${message[1]} is alive.`)
       }
