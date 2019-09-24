@@ -319,8 +319,6 @@ wss.on('connection', ws => {
         const token = clients.clientList[message[1]].token
         const pushTitle = message[2].split(',').join(' ')
         const pushMessage = message[3].split(',').join(' ')
-        console.log(pushTitle)
-        console.log(pushMessage)
         sendPush(token, pushTitle, pushMessage)
         console.log(`Push notification sent to ${message[1]} titled ${pushTitle}.`)
       }
