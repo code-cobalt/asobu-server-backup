@@ -339,7 +339,9 @@ const root = {
         equipped_badges: [],
         longitude: 0,
         latitude: 0,
-        is_active: false
+        is_active: false,
+        profile_photo:
+          'http://res.cloudinary.com/code-cobalt/image/upload/v1569216639/demo/itm00silr9mpdrwjtung.jpg'
       })
       const hash = bcrypt.hashSync(userObj.password, 10)
       userObj.password_hash = hash

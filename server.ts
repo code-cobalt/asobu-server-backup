@@ -73,7 +73,7 @@ app.use(
     schema,
     graphiql: true,
     customFormatErrorFn,
-    rootValue: root,
+    rootValue: root
   })
 )
 
@@ -135,44 +135,48 @@ const wss = new SocketServer({ server: httpServer })
 
 async function getToken(email) {
   const query = gql`
-        query User($userEmail: String!) {
-          User(userEmail: $userEmail) {
-            token
-          }
-        }
-      `
-      let tokenResult = await axios.post('https://asobu-staging.herokuapp.com/graphql', { 
-        query: print(query), 
-        variables: {
-          userEmail: email
-        } 
-      })
+    query User($userEmail: String!) {
+      User(userEmail: $userEmail) {
+        token
+      }
+    }
+  `
+  let tokenResult = await axios.post(
+    'https://asobu-staging.herokuapp.com/graphql',
+    {
+      query: print(query),
+      variables: {
+        userEmail: email
+      }
+    }
+  )
 
-      const token = tokenResult.data.data.User.token
-      return token
+  const token = tokenResult.data.data.User.token
+  return token
 }
 
 function sendPush(token, title, message) {
   let config = {
     headers: {
-      "host": "exp.host",
-      "accept": "application/json",
-      "accept-encoding": "gzip, deflate",
-      "content-type": "application/json"
+      host: 'exp.host',
+      accept: 'application/json',
+      'accept-encoding': 'gzip, deflate',
+      'content-type': 'application/json'
     }
   }
-  
+
   let data = {
-    "to": token,
-    "title": title,
-    "body": message
+    to: token,
+    title: title,
+    body: message
   }
-  
-  axios.post('https://exp.host/--/api/v2/push/send', data, config)
-  .catch((err) => {
-    console.log('Axios push error:')
-    console.log(err)
-  })
+
+  axios
+    .post('https://exp.host/--/api/v2/push/send', data, config)
+    .catch(err => {
+      console.log('Axios push error:')
+      console.log(err)
+    })
 }
 
 wss.on('connection', ws => {
@@ -198,9 +202,12 @@ wss.on('connection', ws => {
             console.log(`${clients.clientList[message[1]].email} dropped.`)
           } else {
             clients.clientList[message[1]].failedPings++
-            if (clients.clientList[message[1]].failedPings > 2) clients.clientList[message[1]].heartbeat = false
+            if (clients.clientList[message[1]].failedPings > 2)
+              clients.clientList[message[1]].heartbeat = false
             clients.clientList[message[1]].socket.send('p0')
-            console.log(`Heartbeat sent to ${clients.clientList[message[1]].email}. Failure rate ${newClient.failedPings}.`)
+            console.log(
+              `Heartbeat sent to ${clients.clientList[message[1]].email}. Failure rate ${newClient.failedPings}.`
+            )
           }
         }, 15000)
       }
@@ -211,7 +218,7 @@ wss.on('connection', ws => {
     }
     if (message[0] === 'p0') {
       if (clients.clientList[message[1]]) {
-        clients.clientList[message[1]].failedPings  = 0
+        clients.clientList[message[1]].failedPings = 0
         clients.clientList[message[1]].heartbeat = true
         console.log(`${message[1]} is alive.`)
       }
@@ -236,7 +243,11 @@ wss.on('connection', ws => {
         console.log(`${message[2]} was notified.`)
       } else {
         let token = await getToken(message[2])
-        sendPush(token, 'New Hangout Request', 'You have a received a new hangout request!')
+        sendPush(
+          token,
+          'New Hangout Request',
+          'You have a received a new hangout request!'
+        )
         console.log(`Push notification sent to ${message[2]}.`)
       }
     }
@@ -244,23 +255,37 @@ wss.on('connection', ws => {
     if (message[0] === 'h1') {
       console.log(`${message[1]} accepted a hangout with ${message[2]}.`)
       if (clients.clientList[message[2]]) {
-        clients.clientList[message[2]].socket.send(`h1 ${message[1]} ${message[3]}`)
+        clients.clientList[message[2]].socket.send(
+          `h1 ${message[1]} ${message[3]}`
+        )
         console.log(`${message[2]} was notified.`)
       } else {
         let token = await getToken(message[2])
-        sendPush(token, 'Hangout Request Accepted', 'Your hangout request was accepted!')
+        sendPush(
+          token,
+          'Hangout Request Accepted',
+          'Your hangout request was accepted!'
+        )
         console.log(`Push notification sent to ${message[2]}.`)
       }
     }
     //[0] - Start Hangout Request Code, [1] - Sender Email, [2] - Target Email, [3] - Sender First Name
     if (message[0] === 's0') {
-      console.log(`${message[1]} has requested to start a hangout with ${message[2]}.`)
+      console.log(
+        `${message[1]} has requested to start a hangout with ${message[2]}.`
+      )
       if (clients.clientList[message[2]]) {
-        clients.clientList[message[2]].socket.send(`s0 ${message[1]} ${message[3]}`)
+        clients.clientList[message[2]].socket.send(
+          `s0 ${message[1]} ${message[3]}`
+        )
         console.log(`${message[2]} was notified.`)
       } else {
         let token = await getToken(message[2])
-        sendPush(token, 'Start Your Hangout', 'Your partner is ready to start your hangout!')
+        sendPush(
+          token,
+          'Start Your Hangout',
+          'Your partner is ready to start your hangout!'
+        )
         console.log(`Push notification sent to ${message[2]}.`)
       }
     }
@@ -268,7 +293,9 @@ wss.on('connection', ws => {
     if (message[0] === 's1') {
       console.log(`${message[1]} has confirmed a hangout with ${message[2]}.`)
       if (clients.clientList[message[2]]) {
-        clients.clientList[message[2]].socket.send(`s1 ${message[1]} ${message[3]}`)
+        clients.clientList[message[2]].socket.send(
+          `s1 ${message[1]} ${message[3]}`
+        )
         console.log(`${message[2]} was notified.`)
       }
     }
@@ -276,7 +303,9 @@ wss.on('connection', ws => {
     if (message[0] === 'f1') {
       console.log(`${message[1]} has ended a hangout with ${message[2]}.`)
       if (clients.clientList[message[2]]) {
-        clients.clientList[message[2]].socket.send(`f1 ${message[1]} ${message[3]}`)
+        clients.clientList[message[2]].socket.send(
+          `f1 ${message[1]} ${message[3]}`
+        )
         console.log(`${message[2]} was notified.`)
       }
     }
@@ -285,14 +314,18 @@ wss.on('connection', ws => {
       console.log(`${message[1]} has blocked ${message[2]}.`)
       if (clients.clientList[message[2]])
         clients.clientList[message[2]].socket.send(`b0 ${message[1]}`)
-        console.log(`${message[2]} was notified.`)
+      console.log(`${message[2]} was notified.`)
     }
 
     //[0] - Quiz Game Code, [1] - Origin Email, [2] - Origin First Name, [3] - Partner Email
     if (message[0] === 'q0') {
-      console.log(`${message[1]} has requested to start a game with ${message[3]}`)
+      console.log(
+        `${message[1]} has requested to start a game with ${message[3]}`
+      )
       if (clients.clientList[message[3]]) {
-        clients.clientList[message[3]].socket.send(`q0 ${message[1]} ${message[2]}`)
+        clients.clientList[message[3]].socket.send(
+          `q0 ${message[1]} ${message[2]}`
+        )
         console.log(`${message[3]} was notified.`)
       }
     }
@@ -300,9 +333,13 @@ wss.on('connection', ws => {
     if (message[0] === 'q1') {
       const randomNumber = Math.floor(Math.random() * 12)
       if (clients.clientList[message[1]] && clients.clientList[message[2]]) {
-        clients.clientList[message[1]].socket.send(`q1 ${randomNumber} ${message[2]}`)
+        clients.clientList[message[1]].socket.send(
+          `q1 ${randomNumber} ${message[2]}`
+        )
         console.log(`${message[1]} was sent a question.`)
-        clients.clientList[message[2]].socket.send(`q1 ${randomNumber} ${message[1]}`) 
+        clients.clientList[message[2]].socket.send(
+          `q1 ${randomNumber} ${message[1]}`
+        )
         console.log(`${message[2]} was sent a question.`)
       } else {
         //Send error message if partner dropped
