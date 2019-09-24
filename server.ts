@@ -193,7 +193,7 @@ wss.on('connection', ws => {
         clients.clientList[message[1]].failedPings = 0
         const pulseCheck = setInterval(() => {
           if (!clients.clientList[message[1]].heartbeat) {
-            clients.removeClient(clients.clientList[message[1]])
+            clients.removeClient(newClient.email)
             clearInterval(pulseCheck)
             console.log(`${newClient.email} dropped.`)
           } else {
