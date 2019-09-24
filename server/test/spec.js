@@ -233,7 +233,7 @@ describe('GraphQL Queries', () => {
 
     const chatQuery = {
       query: `query {
-              Chat(chatId: 2) {
+              Chat(chatId: "2") {
                   messages {
                       content
                       from {
