@@ -349,6 +349,17 @@ wss.on('connection', ws => {
         }
       }
     }
+    //[0] - Push Code, [1] - Target Email, [2] - Title, [3] - Message
+    if (message[0] === 'push') {
+      console.log(`Push requested with ${message}.`)
+      if (clients.clientList[message[1]]) {
+        const token = clients.clientList[message[1]].token
+        const pushTitle = message[2].split(',').join(' ')
+        const pushMessage = message[3].split(',').join(' ')
+        sendPush(token, pushTitle, pushMessage)
+        console.log(`Push notification sent to ${message[1]} titled ${pushTitle}.`)
+      }
+    }
   })
 
   ws.on('close', event => {})
