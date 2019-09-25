@@ -71,7 +71,7 @@ const messages = [
       email: 'levans@email.com',
       first_name: 'Lily',
       profile_photo:
-        'https://i.pinimg.com/originals/a6/f4/f0/a6f4f037f9207e4eb4ec5a7cedfd2914.jpg'
+        'https://media.istockphoto.com/photos/portrait-of-beautiful-young-asian-woman-happiness-standing-on-gray-picture-id987189892?k=6&m=987189892&s=612x612&w=0&h=njwrKdyEzsoCOfpzjRapJm7yVWsbkQfrb-D5tSdxtHs='
     },
     timestamp: Date.now(),
     content: 'Hey, nice job at Quidditch!'
@@ -82,7 +82,7 @@ const messages = [
       email: 'jamesp@email.com',
       first_name: 'James',
       profile_photo:
-        'https://pm1.narvii.com/6434/94605250171379229064c93049e39ce310551346_hq.jpg'
+        'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'
     },
     timestamp: Date.now(),
     content: 'Thanks! You should meet me at the after party.'
