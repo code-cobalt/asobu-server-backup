@@ -59,13 +59,13 @@ const config = {
 // **DO NOT DELETE**
 // NOTE: To avoid overages on our MongoDB/Cloudinary, please refrain from
 // seeding, querying, and uploading too often!
-const seeder = new Seeder(config)
-const collections = seeder.readCollectionsFromPath(path.resolve('./data'))
+// const seeder = new Seeder(config)
+// const collections = seeder.readCollectionsFromPath(path.resolve('./data'))
 
-seeder
-  .import(collections)
-  .then(() => console.log('Successfully seeded database'))
-  .catch(err => console.log('Error seeding database', err))
+// seeder
+//   .import(collections)
+//   .then(() => console.log('Successfully seeded database'))
+//   .catch(err => console.log('Error seeding database', err))
 
 app.use(
   '/graphql',
